@@ -28,13 +28,18 @@ const App = () => {
       name: newName,
       number: newNumber,
     }
-    setPersons(persons.concat(personObject))
 
-    if(newName.toLowerCase().includes(search))
-      setFilteredPersons(filteredPersons.concat(personObject))
+    axios.post('http://localhost:3001/persons', personObject)
+      .then(response => {
+        const newPerson = response.data
+        setPersons(persons.concat(newPerson))
 
-    setNewName('')
-    setNewNumber('')
+        if(newName.toLowerCase().includes(search))
+          setFilteredPersons(filteredPersons.concat(newPerson))
+
+        setNewName('')
+        setNewNumber('')
+      })
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
