@@ -22,24 +22,40 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     if(persons.some(person => person.name.toLowerCase() === newName.toLowerCase())){
-      return alert(`${newName} is already added to phonebook`)
-    }
-    
-    const personObject = {
-      name: newName,
-      number: newNumber,
-    }
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)){
+        const person = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+        const updatedPerson = { ...person, number: newNumber }
 
-    personService.create(personObject)
-      .then(newPerson => {
-        setPersons(persons.concat(newPerson))
-    
-        if(newName.toLowerCase().includes(search))
-          setFilteredPersons(filteredPersons.concat(newPerson))
-    
-        setNewName('')
-        setNewNumber('')
-      })
+        personService.update(person.id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson))
+        
+            if(newName.toLowerCase().includes(search))
+              setFilteredPersons(filteredPersons.map(p => p.id !== returnedPerson.id ? p : returnedPerson))
+        
+            setNewName('')
+            setNewNumber('')
+          }).catch(error => {
+            alert(`Information of ${newName} has already been removed from server`)
+          })
+      }
+    }else{
+      const personObject = {
+        name: newName,
+        number: newNumber,
+      }
+
+      personService.create(personObject)
+        .then(newPerson => {
+          setPersons(persons.concat(newPerson))
+      
+          if(newName.toLowerCase().includes(search))
+            setFilteredPersons(filteredPersons.concat(newPerson))
+      
+          setNewName('')
+          setNewNumber('')
+        })
+    }
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
