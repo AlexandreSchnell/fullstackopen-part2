@@ -50,6 +50,19 @@ const App = () => {
     setFilteredPersons(persons.filter(person => person.name.toLowerCase().includes(searchTerm)))
   }
 
+  const handleDelete = (event) => {
+    const id = event.target.value
+    const person = persons.find(p => p.id === id)
+    if(window.confirm(`Delete ${person.name}?`)){
+      personService.remove(person.id)
+        .then(() => {
+          alert(`${person.name} has been deleted`)
+          setPersons(persons.filter(p => p.id !== person.id))
+          setFilteredPersons(filteredPersons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -63,7 +76,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons}/>
+      <Persons persons={filteredPersons} handleDelete={handleDelete} />
     </div>
   )
 }
