@@ -4,6 +4,8 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/persons'
+import SuccessNotification from './components/SuccessNotification'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,6 +13,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [search, setSearch] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     personService.getAll().then(initialPersons => {
@@ -35,6 +38,11 @@ const App = () => {
         
             setNewName('')
             setNewNumber('')
+            setSuccessMessage(`Updated ${returnedPerson.name}'s number`)
+
+            setTimeout(() => {
+              setSuccessMessage(null)
+            }, 5000)
           }).catch(error => {
             alert(`Information of ${newName} has already been removed from server`)
           })
@@ -54,6 +62,10 @@ const App = () => {
       
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(`Added ${newPerson.name}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
     }
   }
@@ -82,6 +94,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessNotification message={successMessage} />
       <Filter search={search} handleSearch={handleSearch}/>
       <h2>add a new</h2>
       <PersonForm 
