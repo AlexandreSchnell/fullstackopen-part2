@@ -1,7 +1,7 @@
-import Languages from "./Languages"
+import Country from "./Country"
 
-const Countries = ({ countries }) => {
-if (!countries)
+const Countries = ({ countries, showCountry, selectedCountry }) => {
+  if (!countries)
     return null
 
   if (countries.length === 0)
@@ -11,25 +11,21 @@ if (!countries)
     return (
         <div>
           {countries.map(country => (
-            <p key={country.name.common}>
-              {country.name.common}
-            </p>
+            <div key={country.name.common}>
+              <p key={country.name.common}>
+                {country.name.common} <button onClick={() => showCountry(country)}>Show</button>
+              </p>
+              {selectedCountry === country.name.common && (
+                <Country country={country} />
+              )}
+            </div>
           ))}
         </div>
     )
   }
 
-  if (countries.length === 1) {
-    return (
-        <div>
-            <h1>{countries[0].name.common}</h1>
-            <p>Capital: {countries[0].capital}</p>
-            <p>Area: {countries[0].area}</p>
-            <Languages languages={countries[0].languages} />
-            <img src={countries[0].flags.png} alt={countries[0].flags.alt} />
-        </div>
-    )
-  }
+  if (countries.length === 1)
+    return <Country country={countries[0]} />
 }
 
 export default Countries;

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import countriesService from './services/countries'
 import Message from './components/Message'
 import Countries from './components/Countries'
@@ -7,9 +7,11 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [countries, setCountries] = useState(null);
   const [message, setMessage] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState('');
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
+    setSelectedCountry('');
     if(event.target.value.length > 0){
       countriesService.getCountryByName(event.target.value)
         .then(data => {
@@ -20,15 +22,24 @@ const App = () => {
             setMessage(null);
             setCountries(data);
           }
+        }).catch(error => {
+          setMessage('No countries found');
+          setCountries(null);
         });
+    }else{
+      setCountries(null);
     }
+  };
+
+  const showCountry = (country) => {
+    setSelectedCountry(country.name.common);
   };
 
   return (
     <div>
       find countries <input value={searchTerm} onChange={handleChange}/>
       <Message message={message} />
-      <Countries countries={countries} />
+      <Countries countries={countries} showCountry={showCountry} selectedCountry={selectedCountry}/>
     </div>
   );
 }
