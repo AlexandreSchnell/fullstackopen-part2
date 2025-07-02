@@ -1,6 +1,6 @@
 import Country from "./Country"
 
-const Countries = ({ countries, showCountry, selectedCountry }) => {
+const Countries = ({ countries, showCountry, selectedCountry, weatherInfo }) => {
   if (!countries)
     return null
 
@@ -16,7 +16,7 @@ const Countries = ({ countries, showCountry, selectedCountry }) => {
                 {country.name.common} <button onClick={() => showCountry(country)}>Show</button>
               </p>
               {selectedCountry === country.name.common && (
-                <Country country={country} />
+                <Country country={country} weatherInfo={weatherInfo}/>
               )}
             </div>
           ))}
@@ -25,7 +25,7 @@ const Countries = ({ countries, showCountry, selectedCountry }) => {
   }
 
   if (countries.length === 1)
-    return <Country country={countries[0]} />
+    return <Country country={countries[0]} weatherInfo={weatherInfo} />
 }
 
 export default Countries;
